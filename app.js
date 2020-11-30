@@ -4,11 +4,15 @@ const cardsRouter = require('./routes/cards');
 const { PORT = 3000 } = process.env;
 const app = express();
 
+
 app.use(express.static(__dirname + '/public'));
+
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
+app.use('*', (req, res) => {
+  return res.status(404).send({ "message": "Запрашиваемый ресурс не найден" })
+});
 
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
+  console.log(`Сервер запущен на порту ${PORT}`);
 });
