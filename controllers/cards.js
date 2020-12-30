@@ -10,12 +10,22 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Данные не прошли валидацию' });
+      }
+      return res.status(500).send(err);
+    });
 };
 
 const deleteCard = (req, res) => {
   Card.findOneAndRemove({ owner: req.user._id, _id: req.params.cardId })
-    .then(() => res.status(200).send('Карточка удалена'))
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: 'Нет карточки с таким id' });
+      }
+      return res.status(200).send('Карточка удалена');
+    })
     .catch((err) => res.status(500).send(err));
 };
 

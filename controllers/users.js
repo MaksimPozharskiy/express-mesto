@@ -18,7 +18,12 @@ const createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Данные не прошли валидацию' });
+      }
+      return res.status(500).send(err);
+    });
 };
 
 module.exports = { getUsers, getProfile, createUser };
