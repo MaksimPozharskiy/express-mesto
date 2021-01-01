@@ -26,7 +26,12 @@ const deleteCard = (req, res) => {
       }
       return res.status(200).send('Карточка удалена');
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Id карточки не валидный' });
+      }
+      return res.status(500).send(err);
+    });
 };
 
 module.exports = { getCards, createCard, deleteCard };
