@@ -19,7 +19,7 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Данные не прошли валидацию' });
       }
       return res.status(500).send(err);
