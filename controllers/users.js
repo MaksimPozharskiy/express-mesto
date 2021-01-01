@@ -11,7 +11,12 @@ const getProfile = (req, res) => User.findById(req.params.id)
     }
     return res.status(200).send(user);
   })
-  .catch((err) => res.status(500).send(err));
+  .catch((err) => {
+    if (err.name === 'CastError') {
+      return res.status(400).send({ message: 'Id юзера не валидный' });
+    }
+    return res.status(500).send(err);
+  });
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
